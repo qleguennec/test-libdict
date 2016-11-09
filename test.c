@@ -6,7 +6,7 @@
 /*   By: qle-guen <qle-guen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 03:33:41 by qle-guen          #+#    #+#             */
-/*   Updated: 2016/11/09 07:18:45 by qle-guen         ###   ########.fr       */
+/*   Updated: 2016/11/09 23:32:34 by qle-guen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "libvect/libvect.h"
 #include <string.h>
 #include <stdio.h>
+
+#define SEP " | "
 
 #define ADD(k, v) dict_str_add(d, k, v)
 
@@ -28,16 +30,58 @@
 	if (!ent) ok++;
 
 #define IMPORT(k, v); \
-	dict_str_import(d, k"="v, '=');
+	dict_str_import(d, k SEP v, SEP);
 
 #define EXPORT(k, v); test++; \
 	i = 0; \
 	while (exp[i]) \
 	{ \
-		if (!strcmp(k"="v, exp[i])) \
+		if (!strcmp(k SEP v, exp[i])) \
 			ok++; \
 		i++; \
 	}
+
+#define TEST_RUN(s) \
+	printf("-- TEST %s\n", s); \
+	test = 0; \
+	ok = 0; \
+	i = 0; \
+	TEST("banana", "fruit"); \
+	TEST("lazy", "me"); \
+	TEST("Trump", "bad"); \
+	TEST("flowers are", "blue"); \
+	TEST("hashmaps are", "cool"); \
+	TEST("bleu blanc", "rouge"); \
+	TEST("answer", "42"); \
+	TEST("logic", "fail"); \
+	TEST("holy", "thunder"); \
+	TEST("baby", "rage"); \
+	TEST("dummy", "ymmud"); \
+	TEST("don't", "bully"); \
+	TEST("Lolita", "Vladimir Nabokov"); \
+	TEST("Cent ans de solitude", "Gabriel Garcia Marquez"); \
+	TEST("La mort du roi Tsongor", "Laurent Gaude"); \
+	printf("-- OK: %d\\%d\n", ok, test); \
+	printf("%lu used, %lu total\n", d.used, d.total); \
+	n_entries(&d); \
+	printf("\n");
+
+void		n_entries(t_dict *d)
+{
+	t_dict_ent	*ent;
+	size_t		i;
+	size_t		n;
+
+	n = 0;
+	ent = d->ents;
+	i = 0;
+	while (dict_iter(d, &ent, &n))
+	{
+		i++;
+		ent++;
+	}
+	printf("%lu entries\n", i);
+}
 
 void		build_dict(t_dict *d)
 {
@@ -88,99 +132,23 @@ int			main(void)
 	size_t i;
 	int test;
 	int ok;
+	char **exp;
 
 	build_dict(&d);
-	test = 0;
-	ok = 0;
 #undef TEST
 #define TEST LOOKUP
-	TEST("banana", "fruit");
-	TEST("lazy", "me");
-	TEST("Trump", "bad");
-	TEST("flowers are", "blue");
-	TEST("hashmaps are", "cool");
-	TEST("bleu blanc", "rouge");
-	TEST("answer", "42");
-	TEST("logic", "fail");
-	TEST("holy", "thunder");
-	TEST("baby", "rage");
-	TEST("dummy", "ymmud");
-	TEST("don't", "bully");
-	TEST("Lolita", "Vladimir Nabokov");
-	TEST("Cent ans de solitude", "Gabriel Garcia Marquez");
-	TEST("La mort du roi Tsongor", "Laurent Gaude");
-	printf("OK: %d\\%d\n", ok, test);
-	printf("%lu used, %lu total\n", d.used, d.total);
-	test = 0;
-	ok = 0;
+	TEST_RUN("lookup");
 #undef TEST
 #define TEST DEL
-	TEST("banana", "fruit");
-	TEST("lazy", "me");
-	TEST("Trump", "bad");
-	TEST("flowers are", "blue");
-	TEST("hashmaps are", "cool");
-	TEST("bleu blanc", "rouge");
-	TEST("answer", "42");
-	TEST("logic", "fail");
-	TEST("holy", "thunder");
-	TEST("baby", "rage");
-	TEST("dummy", "ymmud");
-	TEST("don't", "bully");
-	TEST("Lolita", "Vladimir Nabokov");
-	TEST("Cent ans de solitude", "Gabriel Garcia Marquez");
-	TEST("La mort du roi Tsongor", "Laurent Gaude");
-	printf("OK: %d\\%d\n", ok, test);
-	printf("%lu used, %lu total\n", d.used, d.total);
-	test = 0;
-	ok = 0;
+	TEST_RUN("del");
 #undef TEST
 #define TEST LOOKUP
 	import_dict(&d);
-	TEST("banana", "fruit");
-	TEST("lazy", "me");
-	TEST("Trump", "bad");
-	TEST("flowers are", "blue");
-	TEST("hashmaps are", "cool");
-	TEST("bleu blanc", "rouge");
-	TEST("answer", "42");
-	TEST("logic", "fail");
-	TEST("holy", "thunder");
-	TEST("baby", "rage");
-	TEST("dummy", "ymmud");
-	TEST("don't", "bully");
-	TEST("Lolita", "Vladimir Nabokov");
-	TEST("Cent ans de solitude", "Gabriel Garcia Marquez");
-	TEST("La mort du roi Tsongor", "Laurent Gaude");
-	printf("OK: %d\\%d\n", ok, test);
-	printf("%lu used, %lu total\n", d.used, d.total);
+	TEST_RUN("import-lookup");
 #undef TEST
 #define TEST EXPORT
-	test = 0;
-	ok = 0;
-	i = 0;
-	char **exp;
-	exp = dict_str_export(&d, '=');
-	TEST("banana", "fruit");
-	TEST("lazy", "me");
-	TEST("Trump", "bad");
-	TEST("flowers are", "blue");
-	TEST("hashmaps are", "cool");
-	TEST("bleu blanc", "rouge");
-	TEST("answer", "42");
-	TEST("logic", "fail");
-	TEST("holy", "thunder");
-	TEST("baby", "rage");
-	TEST("dummy", "ymmud");
-	TEST("don't", "bully");
-	TEST("Lolita", "Vladimir Nabokov");
-	TEST("Cent ans de solitude", "Gabriel Garcia Marquez");
-	TEST("La mort du roi Tsongor", "Laurent Gaude");
-	printf("OK: %d\\%d\n", ok, test);
-	printf("%lu used, %lu total\n", d.used, d.total);
-
-	while (*exp)
-		printf("%s\n", *exp++);
+	exp = dict_str_export(&d, "=");
+	TEST_RUN("export");
 
 	dict_free(&d);
 	return (0);
