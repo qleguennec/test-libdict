@@ -6,7 +6,7 @@
 /*   By: qle-guen <qle-guen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 03:33:41 by qle-guen          #+#    #+#             */
-/*   Updated: 2016/11/09 06:32:35 by qle-guen         ###   ########.fr       */
+/*   Updated: 2016/11/09 07:18:45 by qle-guen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,28 @@
 #include <stdio.h>
 
 #define ADD(k, v) dict_str_add(d, k, v)
+
 #define LOOKUP(k, v) test++; \
 	ent = dict_str_lookup(&d, k); \
 	vect_mset_end(&ent->val, '\0', 1); \
 	if (ent && !strcmp(v, ent->val.data)) ok++;
+
 #define DEL(k, v)  test++; \
 	dict_del(&d, k); \
 	ent = dict_str_lookup(&d, k); \
 	if (!ent) ok++;
+
 #define IMPORT(k, v); \
 	dict_str_import(d, k"="v, '=');
 
+#define EXPORT(k, v); test++; \
+	i = 0; \
+	while (exp[i]) \
+	{ \
+		if (!strcmp(k"="v, exp[i])) \
+			ok++; \
+		i++; \
+	}
 
 void		build_dict(t_dict *d)
 {
@@ -74,6 +85,7 @@ int			main(void)
 {
 	t_dict d;
 	t_dict_ent *ent;
+	size_t i;
 	int test;
 	int ok;
 
@@ -142,6 +154,33 @@ int			main(void)
 	TEST("La mort du roi Tsongor", "Laurent Gaude");
 	printf("OK: %d\\%d\n", ok, test);
 	printf("%lu used, %lu total\n", d.used, d.total);
+#undef TEST
+#define TEST EXPORT
+	test = 0;
+	ok = 0;
+	i = 0;
+	char **exp;
+	exp = dict_str_export(&d, '=');
+	TEST("banana", "fruit");
+	TEST("lazy", "me");
+	TEST("Trump", "bad");
+	TEST("flowers are", "blue");
+	TEST("hashmaps are", "cool");
+	TEST("bleu blanc", "rouge");
+	TEST("answer", "42");
+	TEST("logic", "fail");
+	TEST("holy", "thunder");
+	TEST("baby", "rage");
+	TEST("dummy", "ymmud");
+	TEST("don't", "bully");
+	TEST("Lolita", "Vladimir Nabokov");
+	TEST("Cent ans de solitude", "Gabriel Garcia Marquez");
+	TEST("La mort du roi Tsongor", "Laurent Gaude");
+	printf("OK: %d\\%d\n", ok, test);
+	printf("%lu used, %lu total\n", d.used, d.total);
+
+	while (*exp)
+		printf("%s\n", *exp++);
 
 	dict_free(&d);
 	return (0);
