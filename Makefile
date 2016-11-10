@@ -16,6 +16,10 @@ CYAN		=	"\033[0;36m"
 WHITE		=	"\033[0;37m"
 END			=	"\033[0m"
 
+PRINT		=	@printf COL$(PROJECT)$(END)'\t'
+PRPROJ		=	$(subst COL, $(BLUE), $(PRINT))
+PRRM		=	$(subst COL, $(CYAN), $(PRINT))
+
 FIND		=	find . -maxdepth 1 -printf "%f\n"
 
 SRCEX		=
@@ -28,34 +32,37 @@ LIBS		=	$(addprefix $(BUILDDIR)/, $(addsuffix .a, $(subst -l, lib, $(LIBLINK))))
 all: $(NAME)
 
 $(BUILDDIR)/%.a: %
-	@printf $(BLUE)$(PROJECT)$(END)'\t'
+	$(PRPROJ)
 	BINDIR=$(CURDIR)/$(BUILDDIR) BUILDDIR=$(CURDIR)/$(BUILDDIR) \
 		make --no-print-directory -C $<
 
 $(BUILDDIR)/%.o: %.c
 	@[ -d $(BUILDDIR) ] || mkdir $(BUILDDIR)
-	@printf $(BLUE)$(PROJECT)$(END)'\t'
+	$(PRPROJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJECTS) $(LIBS)
-	@printf $(BLUE)$(PROJECT)$(END)'\t'
+	$(PRPROJ)
 	$(CC) $(CFLAGS) -L$(BUILDDIR) $(LIBLINK) $(OBJECTS) $(LIBLINK) -o $(NAME)
 	@printf "OK\t"$(NAME)'\n'
 
-.PHONY: clean sclean fclean re r
+.PHONY: clean sclean fclean re r ex
 
 clean:
-	@printf $(YELLOW)$(PROJECT)$(END)'\t'
+	$(PRRM)
 	rm -rf $(BUILDDIR)
 
 sclean:
-	@printf $(YELLOW)$(PROJECT)$(END)'\t'
+	$(PRRM)
 	rm -rf $(OBJECTS)
 
 fclean: clean
-	@printf $(YELLOW)$(PROJECT)$(END)'\t'
+	$(PRRM)
 	rm -rf $(NAME)
 
 r: sclean all
+
+ex: r
+	$(NAME)
 
 re: fclean all

@@ -6,12 +6,13 @@
 /*   By: qle-guen <qle-guen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 03:33:41 by qle-guen          #+#    #+#             */
-/*   Updated: 2016/11/10 00:42:05 by qle-guen         ###   ########.fr       */
+/*   Updated: 2016/11/10 07:49:49 by qle-guen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libdict/libdict.h"
 #include "libvect/libvect.h"
+#include "test.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -21,13 +22,13 @@
 
 #define LOOKUP(k, v) test++; \
 	ent = dict_str_lookup(&d, k); \
-	vect_mset_end(&ent->val, '\0', 1); \
-	if (ent && !strcmp(v, ent->val.data)) ok++;
+	if (ent) vect_mset_end(&ent->val, '\0', 1); \
+	if (ent && !strcmp(v, ent->val.data) && !strcmp(k, ent->key)) ok++;
 
 #define DEL(k, v)  test++; \
-	dict_del(&d, k); \
-	ent = dict_str_lookup(&d, k); \
-	if (!ent) ok++;
+	i = dict_del(&d, k); \
+	if (i) ent = dict_str_lookup(&d, k); \
+	if (i && !ent) ok++;
 
 #define IMPORT(k, v); \
 	dict_str_import(d, k SEP v, SEP);
@@ -41,24 +42,6 @@
 		i++; \
 	}
 
-#define PRE \
-	TEST("banana", "fruit"); \
-	TEST("lazy", "me"); \
-	TEST("Trump", "bad"); \
-	TEST("flowers are", "blue"); \
-	TEST("hashmaps are", "cool"); \
-	TEST("bleu blanc", "rouge"); \
-	TEST("answer", "42"); \
-	TEST("logic", "fail"); \
-	TEST("holy", "thunder"); \
-	TEST("baby", "rage"); \
-	TEST("dummy", "ymmud"); \
-	TEST("love", "you"); \
-	TEST("don't", "bully"); \
-	TEST("Lolita", "Vladimir Nabokov"); \
-	TEST("Cent ans de solitude", "Gabriel Garcia Marquez"); \
-	TEST("La mort du roi Tsongor", "Laurent Gaude"); \
-
 #define TEST_RUN(s) \
 	printf("-- TEST %s\n", s); \
 	test = 0; \
@@ -67,6 +50,7 @@
 	PRE; \
 	printf("-- OK: %d\\%d\n", ok, test); \
 	printf("%lu used, %lu total\n", d.used, d.total); \
+	printf("%lu del, %lu total\n", d.del, d.total); \
 	n_entries(&d); \
 	printf("\n");
 
@@ -89,7 +73,7 @@ void		n_entries(t_dict *d)
 
 void		build_dict(t_dict *d)
 {
-	dict_str_init(d);
+	dict_str_init(d, 1);
 #define TEST ADD
 	PRE;
 }
@@ -108,7 +92,6 @@ int			main(void)
 	size_t i;
 	int test;
 	int ok;
-	char **exp;
 
 	build_dict(&d);
 #undef TEST
@@ -121,11 +104,5 @@ int			main(void)
 #define TEST LOOKUP
 	import_dict(&d);
 	TEST_RUN("import-lookup");
-#undef TEST
-#define TEST EXPORT
-	exp = dict_str_export(&d, "=");
-	TEST_RUN("export");
-
-	dict_free(&d);
 	return (0);
 }
