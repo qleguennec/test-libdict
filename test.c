@@ -6,7 +6,7 @@
 /*   By: qle-guen <qle-guen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 03:33:41 by qle-guen          #+#    #+#             */
-/*   Updated: 2016/11/10 18:46:38 by qle-guen         ###   ########.fr       */
+/*   Updated: 2016/11/10 19:55:16 by qle-guen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,12 @@ int			main(void)
 #define TEST EXPORT
 	exp = dict_str_export(&d, SEP);
 	TEST_RUN("export");
-	exp_print(exp);
+	dict_free(&d);
+
+	char **exp1 = exp;
+	while (*exp)
+		free(*exp++);
+	free(exp1);
+
 	return (0);
 }
