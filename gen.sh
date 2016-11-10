@@ -1,6 +1,6 @@
 DIR="$HOME"
-FMT="\tTEST(\"%i\", \"%f\"); \\\n"
-FMT_OSX="TEST(\"%i\", \"%f\"); \\"
+FMT='TEST("%i", "%f");\\\n'
+FMT_OSX="TEST(\"%i\", \"%f\");\\"
 
 echo "#define PRE \\"
 if [[ "$(uname)" == "Linux" ]]; then
