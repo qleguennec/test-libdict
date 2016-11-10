@@ -4,7 +4,7 @@ FMT_OSX="TEST(\"%i\", \"%f\");\\"
 
 echo "#define PRE \\"
 if [[ "$(uname)" == "Linux" ]]; then
-	find $DIR -type d -printf "$FMT"
+	find $DIR -printf "$FMT"
 else
-	find $DIR -type d -print0 | xargs -0 stat -f "$FMT_OSX"
+	find $DIR -print0 | xargs -0 stat -f "$FMT_OSX"
 fi

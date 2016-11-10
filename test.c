@@ -6,7 +6,7 @@
 /*   By: qle-guen <qle-guen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 03:33:41 by qle-guen          #+#    #+#             */
-/*   Updated: 2016/11/10 19:55:16 by qle-guen         ###   ########.fr       */
+/*   Updated: 2016/11/10 23:13:14 by qle-guen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,12 +115,34 @@ int			main(void)
 #define TEST EXPORT
 	exp = dict_str_export(&d, SEP);
 	TEST_RUN("export");
-	dict_free(&d);
 
 	char **exp1 = exp;
 	while (*exp)
 		free(*exp++);
 	free(exp1);
 
+#undef TEST
+#define TEST DEL
+	TEST_RUN("del");
+
+	printf("-- TEST reuse\n");
+
+	dict_str_add(&d, "test-reuse", "ok");
+	ent = dict_lookup(&d, "test-reuse");
+	dict_del(&d, "test-reuse");
+	printf("%lu used, %lu total\n", d.used, d.total);
+	printf("%lu del, %lu total\n", d.del, d.total);
+	n_entries(&d);
+
+	printf("---\n");
+	dict_str_add(&d, "test-reuse", "ok");
+	ent = dict_lookup(&d, "test-reuse");
+	printf("%lu used, %lu total\n", d.used, d.total);
+	printf("%lu del, %lu total\n", d.del, d.total);
+
+	n_entries(&d);
+	printf("\n");
+
+	dict_free(&d);
 	return (0);
 }
