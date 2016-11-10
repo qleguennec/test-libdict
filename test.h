@@ -1,0 +1,12 @@
+#define PRE \
+	TEST("test1", "un"); \
+	TEST("test2", "deux"); \
+	TEST("test3", "trois"); \
+	TEST("test4", "quatre"); \
+	TEST("test5", "cinq"); \
+	TEST("test6", "six"); \
+	TEST("test7", "sept"); \
+	TEST("test8", "huit"); \
+	TEST("test9", "neuf"); \
+	TEST("test10", "dix"); \
+	TEST("test11", "onze"); \

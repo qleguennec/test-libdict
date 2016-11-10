@@ -20,10 +20,8 @@ PRINT		=	@printf COL$(PROJECT)$(END)'\t'
 PRPROJ		=	$(subst COL, $(BLUE), $(PRINT))
 PRRM		=	$(subst COL, $(CYAN), $(PRINT))
 
-FIND		=	find . -maxdepth 1 -printf "%f\n"
-
 SRCEX		=
-SRC			=	$(filter-out $(SRCEX), $(filter %.c, $(shell $(FIND) -type f)))
+SRC			=	$(filter-out $(SRCEX), $(filter %.c, $(shell ls)))
 OBJECTS		=	$(addprefix $(BUILDDIR)/, $(SRC:%.c=%.o))
 
 LIBLINK		=	-ldict -lvect -lft
