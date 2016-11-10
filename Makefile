@@ -1,14 +1,11 @@
-# Directories
 PROJECT		=	test-libdict
 BINDIR		?=	.
 BUILDDIR	?=	build
-NAME		=	$(BINDIR)/$(PROJECT)
+NAME		=	$(BINDIR)/test-libdict
 
-# Compiler options
 CC			=	clang
-CFLAGS		=	$(addprefix -I,$(INCLUDE)) -Wall -Wextra -Werror -g
+CFLAGS		=	-Wall -Wextra -Werror -g
 
-# Color output
 BLACK		=	"\033[0;30m"
 RED			=	"\033[0;31m"
 GREEN		=	"\033[0;32m"
@@ -19,41 +16,47 @@ CYAN		=	"\033[0;36m"
 WHITE		=	"\033[0;37m"
 END			=	"\033[0m"
 
-SRC += test.c
+FIND		=	find . -maxdepth 1 -printf "%f\n"
 
-LIB += libdict.a
-LIB += libvect.a
-LIB += libft.a
-
+SRCEX		=
+SRC			=	$(filter-out $(SRCEX), $(filter %.c, $(shell $(FIND) -type f)))
 OBJECTS		=	$(addprefix $(BUILDDIR)/, $(SRC:%.c=%.o))
-LIBRARIES	=	$(addprefix $(BUILDDIR)/, $(LIB))
-LIBLINK		+=	$(addprefix -l, $(LIB:lib%.a=%))
+
+LIBDIRS		=	$(subst lib, , $(filter lib%, $(shell $(FIND))))
+LIBS		=	$(addprefix $(BUILDDIR)/lib, $(addsuffix .a, $(LIBDIRS)))
+LIBLINK		=	-ldict -lvect -lft
 
 all: $(NAME)
 
 $(BUILDDIR)/%.a: %
 	@printf $(BLUE)$(PROJECT)$(END)'\t'
 	BINDIR=$(CURDIR)/$(BUILDDIR) BUILDDIR=$(CURDIR)/$(BUILDDIR) \
-		   make --no-print-directory -C $<
+		make --no-print-directory -C $<
 
 $(BUILDDIR)/%.o: %.c
 	@[ -d $(BUILDDIR) ] || mkdir $(BUILDDIR)
 	@printf $(BLUE)$(PROJECT)$(END)'\t'
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJECTS) $(LIBRARIES)
+$(NAME): $(OBJECTS) $(LIBS)
 	@printf $(BLUE)$(PROJECT)$(END)'\t'
-	@$(CC) $(CFLAGS) -L$(BUILDDIR) $(LIBLINK) $(OBJECTS) $(LIBLINK) -o $(NAME)
+	$(CC) $(CFLAGS) -L$(BUILDDIR) $(LIBLINK) $(OBJECTS) $(LIBLINK) -o $(NAME)
 	@printf "OK\t"$(NAME)'\n'
 
-.PHONY: clean fclean re
+.PHONY: clean sclean fclean re r
 
 clean:
-	@printf $(BLUE)$(PROJECT)$(END)'\t'
+	@printf $(YELLOW)$(PROJECT)$(END)'\t'
+	rm -rf $(BUILDDIR)
+
+sclean:
+	@printf $(YELLOW)$(PROJECT)$(END)'\t'
 	rm -rf $(OBJECTS)
 
 fclean: clean
-	@printf $(BLUE)$(PROJECT)$(END)'\t'
+	@printf $(YELLOW)$(PROJECT)$(END)'\t'
 	rm -rf $(NAME)
+
+r: sclean all
 
 re: fclean all
