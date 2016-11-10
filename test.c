@@ -6,7 +6,7 @@
 /*   By: qle-guen <qle-guen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 03:33:41 by qle-guen          #+#    #+#             */
-/*   Updated: 2016/11/09 23:32:34 by qle-guen         ###   ########.fr       */
+/*   Updated: 2016/11/10 00:42:05 by qle-guen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,7 @@
 		i++; \
 	}
 
-#define TEST_RUN(s) \
-	printf("-- TEST %s\n", s); \
-	test = 0; \
-	ok = 0; \
-	i = 0; \
+#define PRE \
 	TEST("banana", "fruit"); \
 	TEST("lazy", "me"); \
 	TEST("Trump", "bad"); \
@@ -57,10 +53,18 @@
 	TEST("holy", "thunder"); \
 	TEST("baby", "rage"); \
 	TEST("dummy", "ymmud"); \
+	TEST("love", "you"); \
 	TEST("don't", "bully"); \
 	TEST("Lolita", "Vladimir Nabokov"); \
 	TEST("Cent ans de solitude", "Gabriel Garcia Marquez"); \
 	TEST("La mort du roi Tsongor", "Laurent Gaude"); \
+
+#define TEST_RUN(s) \
+	printf("-- TEST %s\n", s); \
+	test = 0; \
+	ok = 0; \
+	i = 0; \
+	PRE; \
 	printf("-- OK: %d\\%d\n", ok, test); \
 	printf("%lu used, %lu total\n", d.used, d.total); \
 	n_entries(&d); \
@@ -87,42 +91,14 @@ void		build_dict(t_dict *d)
 {
 	dict_str_init(d);
 #define TEST ADD
-	TEST("banana", "fruit");
-	TEST("lazy", "me");
-	TEST("Trump", "bad");
-	TEST("flowers are", "blue");
-	TEST("hashmaps are", "cool");
-	TEST("bleu blanc", "rouge");
-	TEST("answer", "42");
-	TEST("logic", "fail");
-	TEST("holy", "thunder");
-	TEST("baby", "rage");
-	TEST("dummy", "ymmud");
-	TEST("don't", "bully");
-	TEST("Lolita", "Vladimir Nabokov");
-	TEST("Cent ans de solitude", "Gabriel Garcia Marquez");
-	TEST("La mort du roi Tsongor", "Laurent Gaude");
+	PRE;
 }
 
 void		import_dict(t_dict *d)
 {
 #undef TEST
 #define TEST IMPORT
-	TEST("banana", "fruit");
-	TEST("lazy", "me");
-	TEST("Trump", "bad");
-	TEST("flowers are", "blue");
-	TEST("hashmaps are", "cool");
-	TEST("bleu blanc", "rouge");
-	TEST("answer", "42");
-	TEST("logic", "fail");
-	TEST("holy", "thunder");
-	TEST("baby", "rage");
-	TEST("dummy", "ymmud");
-	TEST("don't", "bully");
-	TEST("Lolita", "Vladimir Nabokov");
-	TEST("Cent ans de solitude", "Gabriel Garcia Marquez");
-	TEST("La mort du roi Tsongor", "Laurent Gaude");
+	PRE;
 }
 
 int			main(void)
