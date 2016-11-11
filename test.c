@@ -6,7 +6,7 @@
 /*   By: qle-guen <qle-guen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 03:33:41 by qle-guen          #+#    #+#             */
-/*   Updated: 2016/11/11 14:52:00 by qle-guen         ###   ########.fr       */
+/*   Updated: 2016/11/11 20:37:22 by qle-guen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 	if (ent && !strcmp(v, ent->val.data) && !strcmp(k, ent->key)) ok++;
 
 #define DEL(k, v)  test++; \
-	if (dict_modify(&d, k, &dict_ent_del) && !dict_lookup(&d, k)) ok++;
+	if (dict_modify(&d, k, DICT_EXIST, &dict_ent_del) && !dict_find_match(&d, k, DICT_USED)) ok++;
 
 #define IMPORT(k, v); \
 	dict_str_import(d, k SEP v, SEP);

@@ -1,7 +1,7 @@
-DIR="$HOME"
+DIR="$WP"
 FMT='TEST("%i", "%f");\\\n'
 FMT_OSX="TEST(\"%i\", \"%f\");\\"
-TYPE=d
+TYPE=f
 
 echo "#define PRE \\"
 if [[ "$(uname)" == "Linux" ]]; then
