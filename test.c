@@ -6,7 +6,7 @@
 /*   By: qle-guen <qle-guen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/09 03:33:41 by qle-guen          #+#    #+#             */
-/*   Updated: 2016/11/10 23:13:14 by qle-guen         ###   ########.fr       */
+/*   Updated: 2016/11/11 14:52:00 by qle-guen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,7 @@
 	if (ent && !strcmp(v, ent->val.data) && !strcmp(k, ent->key)) ok++;
 
 #define DEL(k, v)  test++; \
-	i = dict_del(&d, k); \
-	if (i) ent = dict_lookup(&d, k); \
-	if (i && !ent) ok++;
+	if (dict_modify(&d, k, &dict_ent_del) && !dict_lookup(&d, k)) ok++;
 
 #define IMPORT(k, v); \
 	dict_str_import(d, k SEP v, SEP);
@@ -51,25 +49,7 @@
 	printf("-- OK: %d\\%d\n", ok, test); \
 	printf("%lu used, %lu total\n", d.used, d.total); \
 	printf("%lu del, %lu total\n", d.del, d.total); \
-	n_entries(&d); \
 	printf("\n");
-
-void		n_entries(t_dict *d)
-{
-	t_dict_ent	*ent;
-	size_t		i;
-	size_t		n;
-
-	n = 0;
-	ent = d->ents;
-	i = 0;
-	while (dict_iter(d, &ent, &n, DICT_USED))
-	{
-		i++;
-		ent++;
-	}
-	printf("%lu entries\n", i);
-}
 
 void		build_dict(t_dict *d)
 {
@@ -123,25 +103,7 @@ int			main(void)
 
 #undef TEST
 #define TEST DEL
-	TEST_RUN("del");
-
-	printf("-- TEST reuse\n");
-
-	dict_str_add(&d, "test-reuse", "ok");
-	ent = dict_lookup(&d, "test-reuse");
-	dict_del(&d, "test-reuse");
-	printf("%lu used, %lu total\n", d.used, d.total);
-	printf("%lu del, %lu total\n", d.del, d.total);
-	n_entries(&d);
-
-	printf("---\n");
-	dict_str_add(&d, "test-reuse", "ok");
-	ent = dict_lookup(&d, "test-reuse");
-	printf("%lu used, %lu total\n", d.used, d.total);
-	printf("%lu del, %lu total\n", d.del, d.total);
-
-	n_entries(&d);
-	printf("\n");
+	TEST_RUN("free");
 
 	dict_free(&d);
 	return (0);
